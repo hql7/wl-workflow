@@ -5,9 +5,15 @@
     <!-- 操作区 -->
     <div class="wl-workflow-handle">
       <h3 class="handle-title">画布</h3>
-      <ul>
-        <li></li>
-      </ul>
+      <el-scrollbar class="handle-scroll">
+        <ul>
+          <li>
+            <label class="handle-label">名称：</label>
+            <el-input placeholder="请选择日期" size="small" v-model="handle_form.name"></el-input>
+          </li>
+        </ul>
+      </el-scrollbar>
+      <el-button>11</el-button>
     </div>
   </div>
 </template>
@@ -19,6 +25,10 @@ export default {
   name: "WlWorkflow",
   data() {
     return {
+      handle_form: {
+        name: "",
+        des: "",
+      }, // 操作区表单
       nodes: [
         {
           id: "1",
@@ -231,6 +241,10 @@ this.workflow.on('node:click', ev => {
     line-height: 24px;
     box-sizing: border-box;
     background: #e6e6e6;
+  }
+
+  >.handle-scroll{
+    max-height: calc(100% - 80px);
   }
 }
 </style>
