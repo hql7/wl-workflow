@@ -3,7 +3,7 @@
     <div class="logo-box">
       <img class="a-algo" alt="Vue logo" src="./assets/logo.png">
     </div>
-    <wl-workflow></wl-workflow>
+    <wl-workflow :data="worlflow_data"></wl-workflow>
   </div>
 </template>
 
@@ -14,6 +14,11 @@ export default {
   name: 'App',
   components: {
     WlWorkflow
+  },
+  data(){
+    return {
+      worlflow_data: {}
+    }
   }
 }
 </script>
