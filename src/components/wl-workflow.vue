@@ -53,17 +53,25 @@ export default {
         width: 500,
         height: 500
       },
-      workflow: null
+      nodes: [], // 节点数据
+      edges: [], // 连线数据
+      workflow: null, // 工作流实例
+      id: 1
     };
   },
   computed:{
     selfData(){
-      return this.data;
+      let _props_nodes = this.data.nodes || [];
+      let _props_edges = this.data.edges || [];
+      return {
+        nodes: [..._props_nodes, ...this.nodes],
+        edges: [..._props_edges, ...this.edges],
+      };
     }
   },
   watch: {
-    selfData(val){
-      this.updateDate(val);
+    data(val){
+      this.updateData(val);
     }
   },
   mounted() {
@@ -82,7 +90,7 @@ export default {
         height: this.workflow_box.height,
         fitView: true,
         modes: {
-          default: ["drag-canvas", "drag-node", "activate-relations"]
+          default: ["drag-canvas", "drag-node", "activate-relations"],
         },
         layout: {
           type: "dagre",
@@ -158,8 +166,9 @@ export default {
       this.workflow.render();
     },
     // 更新数据
-    updateDate(data) {
+    updateData(data) {
       this.workflow.changeData(data);
+      this.paint()
     },
     // 新增节点
     addItem(type, model) {
@@ -179,22 +188,39 @@ export default {
     refresh() {
       this.workflow.refresh();
     },
+    // 重绘视图
+    paint(){
+      this.workflow.paint();
+    },
+    // 适应画布
+    handleAutoZoom() {
+      this.workflow.fitView(20);
+    },
+    // 实际尺寸
+    handleResetZoom() {
+      this.workflow.zoomTo(1, this.getViewCenter());
+    },
     // --------------------------------------内置操作事件--------------------------------
     addTask(){
+      console.log(this.id)
       let model = {
-        id: 'node',
-        type: 'rect',
-        label: this.handle_form.name,
-        x: 100,
+        id: `${this.id}`,
+        x: 100*this.id,
         y: 100,
-        style: {
-            lineWidth: 2,
-            stroke: "#5B8FF9",
-            fill: "#C6E5FF"
-          },
+        label: this.handle_form.name,
       };
       this.addItem('node', model);
-      this.refresh()
+      if(this.id>1){
+        this.addItem('edge', {target:`${this.id}`,source:`${this.id-1}`});
+      }
+      this.id+=1;
+      // this.workflow.focusItem(`${this.id}`)
+       this.workflow.layout();
+      // this.paint()
+      /* console.log(Math.random())
+      this.nodes.push({id: 1, label: this.handle_form.name});
+      console.log(this.selfData)
+      this.updateData(this.selfData); */
     }
   }
 };
